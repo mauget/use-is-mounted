@@ -1,3 +1,56 @@
+# Custom `useIsMounted` Hook
+
+This is a demonstration of defending against updating an 
+unmounted component by using a simple custom hook implemented
+with `useRef` and `useEffect` hooks.
+
+Example of use:
+
+```javascript
+function App() {
+    const isMounted = useIsMounted();
+    const [data, setData] = useState('NOT initialized');
+
+    useEffect(() => {
+        (async function () {
+            const resultData = await someAsyncService();
+            if (isMounted.current) {
+                setData(resultData);
+            }
+        })()
+    }, [isMounted]);
+
+    return (
+        <div className="App">
+            <header className="App-header">
+                <p>
+                    {data}
+                </p>
+            </header>
+        </div>
+    );
+}
+```
+
+The `useIsCounted` custom hook in directory `src/useIsMounted`;
+
+```javascript
+import { useRef, useEffect } from 'react';
+
+const useIsMounted = () => {
+    const isMounted = useRef(false);
+    useEffect(() => {
+        isMounted.current = true;
+        return () => isMounted.current = false;
+    }, []);
+    return isMounted;
+};
+
+export default useIsMounted;
+
+```
+
+---------------
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
