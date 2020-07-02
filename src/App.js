@@ -2,18 +2,22 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import useIsMounted from "./useIsMounted";
 
+function colorCodedCSSClass(isMounted) {
+    return isMounted ? 'safe' : 'warning';
+}
+
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 const someAsyncService = async () => {
     await delay(3000);
-    return 'IS initialized';
+    return 'Data fetched';
 }
 
 function App() {
     const isMounted = useIsMounted();
-    const [data, setData] = useState('NOT initialized');
+    const [data, setData] = useState('Fetching data');
 
     useEffect(() => {
         (async function () {
@@ -26,11 +30,9 @@ function App() {
 
     return (
         <div className="App">
-            <header className="App-header">
-                <p>
-                    {data}
-                </p>
-            </header>
+            <p className={colorCodedCSSClass(isMounted.current)}>
+                {data}
+            </p>
         </div>
     );
 }
