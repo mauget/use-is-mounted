@@ -1,7 +1,7 @@
 # Custom `useIsMounted` Hook
 
 This is a demonstration of defending against updating an 
-unmounted component by using a simple custom hook implemented
+unmounted component. We use a simple custom hook implemented
 with `useRef` and `useEffect` hooks.
 
 Example of use:
@@ -9,7 +9,7 @@ Example of use:
 ```javascript
 function App() {
     const isMounted = useIsMounted();
-    const [data, setData] = useState('NOT initialized');
+    const [data, setData] = useState('Is fetching data.');
 
     useEffect(() => {
         (async function () {
@@ -23,7 +23,7 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <p>
+                <p className={colorCodedCSSClass(isMounted.current)}>
                     {data}
                 </p>
             </header>
@@ -32,22 +32,20 @@ function App() {
 }
 ```
 
-The `useIsCounted` custom hook in directory `src/useIsMounted`;
+The source of the `useIsCounted` custom hook located in 
+directory `src/useIsMounted` follows. It tracks when the caller
+component becomes mounted as well as detecting when if 
+becomes unmounted at some point.
 
 ```javascript
-import { useRef, useEffect } from 'react';
-
-const useIsMounted = () => {
+export default function useIsMounted() {
     const isMounted = useRef(false);
     useEffect(() => {
         isMounted.current = true;
         return () => isMounted.current = false;
-    }, []);
+    });
     return isMounted;
-};
-
-export default useIsMounted;
-
+}
 ```
 
 ---------------
